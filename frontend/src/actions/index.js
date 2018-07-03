@@ -15,13 +15,6 @@ export function hidePreloader(){
   }
 }
 
-export function setQuery(query){
-  return {
-    type: 'SET_QUERY',
-    payload: query
-  }
-}
-
 export function fetchGenres(){
   return async dispatch => {
     try {
@@ -41,7 +34,8 @@ export function setGenres(genres){
   }
 }
 
-export function fetchMovies({query = '', page = 1}){
+export function fetchMovies(query, page = 1){
+  console.log('fetch',  query, page)
   return async dispatch => {
     dispatch(showPreloader())
     try {

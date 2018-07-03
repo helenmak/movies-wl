@@ -16,7 +16,6 @@ class AddSection extends React.Component {
   hideModal = () => this.setState(() => ({ isModalVisible: false }))
 
   fetchMovies = query => {
-    this.props.setQuery(query)
     this.props.fetchMovies({query})
   }
 
@@ -78,8 +77,7 @@ class AddSection extends React.Component {
 const mapDispatchToProps = dispatch => {
   return {
     fetchMovies: config => dispatch(actions.fetchMovies(config)),
-    addMovies: movieData => dispatch(actions.addMovies(movieData)),
-    setQuery: query => dispatch(actions.setQuery(query))
+    addMovies: movieData => dispatch(actions.addMovies(movieData))
   }
 }
 

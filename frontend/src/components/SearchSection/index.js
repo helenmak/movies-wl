@@ -8,10 +8,7 @@ const Search = Input.Search
 
 const SearchSection = props => {
 
-  const fetchMovies = query => {
-    props.setQuery(query)
-    props.fetchMovies({query})
-  }
+  const fetchMovies = title => props.fetchMovies({ title })
 
   return <Search
     placeholder="your movie"
@@ -24,8 +21,7 @@ const SearchSection = props => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchMovies: config => dispatch(actions.fetchMovies(config)),
-    setQuery: query => dispatch(actions.setQuery(query))
+    fetchMovies: query => dispatch(actions.fetchMovies(query))
   }
 }
 
