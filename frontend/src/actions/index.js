@@ -44,7 +44,7 @@ export function fetchMovies({query = '', page = 1}){
   return async dispatch => {
     dispatch(showPreloader())
     try {
-      const { data } = await axios.get(api.searchMovie(query, page))
+      const { data } = await axios.get(api.searchMovies(query, page))
       const dataToSet = Map(fromJS(data))
       dispatch(setMovies(dataToSet))
     } catch (err) {
@@ -69,6 +69,38 @@ export function fetchCurrentMovie(id){
       const { data } = await axios.get(api.fetchMovie(id))
       const dataToSet = Map(fromJS(data))
       dispatch(setCurrentMovie(dataToSet))
+    } catch (err) {
+      console.log(err)
+    } finally {
+      dispatch(hidePreloader())
+    }
+  }
+}
+
+export function addNewMovies(movies){
+  return async dispatch => {
+    dispatch(showPreloader())
+    try {
+      const { data } = await axios.post(api.addMovies(), { movies })
+      const dataToSet = Map(fromJS(data))
+      dispatch(setCurrentMovie(dataToSet))
+      // dispatch(fetchMovies())
+    } catch (err) {
+      console.log(err)
+    } finally {
+      dispatch(hidePreloader())
+    }
+  }
+}
+
+export function deleteMovie(id){
+  return async dispatch => {
+    dispatch(showPreloader())
+    try {
+      const { data } = await axios.post(api.deleteMovie(id))
+      // const dataToSet = Map(fromJS(data))
+      // dispatch(setCurrentMovie(dataToSet))
+      // dispatch(fetchMovies())
     } catch (err) {
       console.log(err)
     } finally {
