@@ -12,10 +12,6 @@ import NoContent from '../NoContent'
 class MainPage extends React.Component{
   state = {}
 
-  componentDidMount() {
-    this.props.fetchGenres()
-  }
-
   render () {
     return (
       <React.Fragment>
@@ -28,7 +24,9 @@ class MainPage extends React.Component{
             </Col>
           </Row>
           <Row type="flex" justify='center'>
-            <ConditionalMoviesCards {...this.props}/>
+            <Col xs={12}>
+              <ConditionalMoviesCards {...this.props}/>
+            </Col>
           </Row>
       </React.Fragment>
     )
@@ -50,7 +48,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchGenres: () => dispatch(actions.fetchGenres())
+    fetchMovies: () => dispatch(actions.fetchMovies())
   }
 }
 

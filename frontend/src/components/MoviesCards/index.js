@@ -18,8 +18,6 @@ class MoviesCards extends React.Component {
     }
   }
 
-  imageApi = 'https://image.tmdb.org/t/p/'
-
   handlePaginationChange = page => {
     const config = {page, query: this.props.query}
     this.props.fetchMovies(config)
@@ -27,25 +25,37 @@ class MoviesCards extends React.Component {
 
   handleMovieCardClick = movieId => this.props.goToPage(`movies/${movieId}`)
 
+  deleteMovie = (event, movieId) => {
+    event.stopPropagation()
+    this.props.deleteMovie(movieId)
+  }
+
   renderIconText = (type, text) =>
     <span>
       <Icon type={type} style={{ marginRight: 8 }} />
       {text}
     </span>
 
+  renderDescription = movie => {
+    return <div>
+      <div>Id: {movie.get('_id')}</div>
+    </div>
+  }
+
   renderMovieItem = movie =>
     <List.Item
-      style={{minHeight: '263px'}}
+      style={{minHeight: '100px'}}
       key={movie.get('title')}
-      actions={[this.renderIconText("star-o", movie.get('vote_average')), this.renderIconText("like-o", movie.get('popularity')), this.renderIconText('calendar', movie.get('release_date'))]}
-      extra={<img alt="no poster" src={`${this.imageApi}/w154/${movie.get('poster_path')}`} />}
-      onClick ={()=>this.handleMovieCardClick(movie.get('id'))}
+      extra={<div onClick={(e) => this.deleteMovie(e, movie.get('_id'))}>Delete film</div>}
+      actions={[this.renderIconText('calendar', movie.get('year'))]}
+      onClick ={()=>this.handleMovieCardClick(movie.get('_id'))}
     >
       <List.Item.Meta
         title={movie.get('title')}
-        description={movie.get('adult') && '18+'}
+        description={this.renderDescription(movie)}
       />
-      {movie.get('overview')}
+      <div>Format: {movie.get('format')}</div>
+      <div>Stars: {movie.get('stars').join(", ")}</div>
     </List.Item>
 
   setDataSource = movies => movies ? movies.toArray() : []
@@ -72,6 +82,7 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchMovies: query => dispatch(actions.fetchMovies(query)),
     fetchCurrentMovie: id => dispatch(actions.fetchCurrentMovie(id)),
+    deleteMovie: id => dispatch(actions.deleteMovie(id)),
     goToPage: route => dispatch(push(route))
   }
 }
@@ -79,10 +90,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
   return {
     movies: state.getIn(['movies', 'results']),
-    query: state.getIn(['movies', 'query']),
-    currentPage: state.getIn(['movies', 'page']),
-    totalResults: state.getIn(['movies', 'total_results']),
-    totalPages: state.getIn(['movies', 'total_pages']),
+    currentPage: state.getIn(['movies', 'currentPage']),
+    totalResults: state.getIn(['movies', 'totalResults'])
   }
 }
 

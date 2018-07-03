@@ -55,9 +55,9 @@ Movie.statics.findMovies = function ({title, stars, page}) {
     this.find(query).sort({ title: 'asc' }).skip(itemsOffset).limit(itemsOnPage),
     this.find(query).count(),
   ]).then(result => ({
-    data: result[0],
+    results: result[0],
     currentPage: +page,
-    totalPages: Math.ceil(result[1] / itemsOnPage),
+    totalResults: result[1]
   }))
 }
 

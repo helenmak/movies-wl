@@ -15,33 +15,21 @@ export function hidePreloader(){
   }
 }
 
-export function fetchGenres(){
-  return async dispatch => {
-    try {
-      const { data } = await axios.get(api.fetchGenres())
-      const dataToSet = Map(fromJS(data))
-      dispatch(setGenres(dataToSet))
-    } catch (err) {
-      console.log(err)
-    }
-  }
-}
-
-export function setGenres(genres){
+export function setQuery(query){
   return {
-    type: 'SET_GENRES',
-    payload: genres
+    type: 'SET_QUERY',
+    payload: query
   }
 }
 
-export function fetchMovies(query, page = 1){
-  console.log('fetch',  query, page)
+export function fetchMovies(query, page){
   return async dispatch => {
     dispatch(showPreloader())
     try {
       const { data } = await axios.get(api.searchMovies(query, page))
       const dataToSet = Map(fromJS(data))
       dispatch(setMovies(dataToSet))
+      dispatch(setQuery(query))
     } catch (err) {
       console.log(err)
     } finally {
@@ -75,13 +63,14 @@ export function fetchCurrentMovie(id){
 export function addMovies(movies){
   const wrapInArray = (...args) => args
   const dataToSend = ifElse(Array.isArray, identity, wrapInArray)(movies)
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(showPreloader())
     try {
-      const { data } = await axios.post(api.addMovies(), { movies: dataToSend })
-      const dataToSet = Map(fromJS(data))
-      dispatch(setCurrentMovie(dataToSet))
-      // dispatch(fetchMovies())
+      await axios.post(api.addMovies(), { movies: dataToSend })
+
+      const query = getState().getIn(['movies', 'query'])
+      const page = getState().getIn(['movies', 'currentPage'])
+      dispatch(fetchMovies(query, page))
     } catch (err) {
       console.log(err)
     } finally {
@@ -91,13 +80,14 @@ export function addMovies(movies){
 }
 
 export function deleteMovie(id){
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(showPreloader())
     try {
-      const { data } = await axios.post(api.deleteMovie(id))
-      // const dataToSet = Map(fromJS(data))
-      // dispatch(setCurrentMovie(dataToSet))
-      // dispatch(fetchMovies())
+      await axios.delete(api.deleteMovie(id))
+
+      const query = getState().getIn(['movies', 'query'])
+      const page = getState().getIn(['movies', 'currentPage'])
+      dispatch(fetchMovies(query, page))
     } catch (err) {
       console.log(err)
     } finally {

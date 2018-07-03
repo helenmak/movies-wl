@@ -2,14 +2,12 @@ import { Map } from 'immutable'
 
 const initialState = Map({
   results: null,
-  page: 1,
-  total_pages: 0,
-  total_results: 0,
-  query: ''
+  currentPage: 1,
+  totalResults: 0,
+  query: null
 })
 
 const moviesReducer = (state = initialState, action)=>{
-
   switch(action.type){
     case 'SET_MOVIES':
       return state.merge(action.payload)
