@@ -1,9 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import { Row } from 'antd'
+import { Row, Col } from 'antd'
 import * as actions from "../../actions"
 import SearchSection from '../SearchSection'
+import AddSection from '../AddSection'
 import MoviesCards from '../MoviesCards'
 import {branch} from "recompose"
 import NoContent from '../NoContent'
@@ -19,7 +20,12 @@ class MainPage extends React.Component{
     return (
       <React.Fragment>
           <Row type="flex" justify='center'>
-            <SearchSection/>
+            <Col>
+              <SearchSection/>
+            </Col>
+            <Col>
+              <AddSection/>
+            </Col>
           </Row>
           <Row type="flex" justify='center'>
             <ConditionalMoviesCards {...this.props}/>

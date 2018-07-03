@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const movieDb = require('../models');
+const movieDb = require('../models').Movie;
 
 // router.get('/search/movie', function(req, res, next) {
 //   res.render('index', { title: 'Movies' });
@@ -15,6 +15,7 @@ router.get('/movies/:id', (req, res) => {
 });
 
 router.post('/movies', (req, res) => {
+  console.log('route movie body: ', req.body)
   movieDb.addMovies(req.body).then(createdMovie => res.send(createdMovie));
 });
 

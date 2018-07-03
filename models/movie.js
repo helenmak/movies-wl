@@ -28,7 +28,8 @@ const movieSchema = {
 
 const Movie = new Schema(movieSchema);
 
-Movie.statics.addMovies = function (movies) {
+Movie.statics.addMovies = function ({movies}) {
+  console.log('movie add method, movies, array: ', movies)
   return Promise.all(
     movies.map(({title, year, format, stars}) => {
       return new this({

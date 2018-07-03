@@ -1,5 +1,6 @@
 import * as api from '../utils/api'
 import axios from 'axios'
+import { ifElse, identity, concat } from 'ramda'
 import { Map, fromJS } from 'immutable'
 
 export function showPreloader(){
@@ -77,11 +78,13 @@ export function fetchCurrentMovie(id){
   }
 }
 
-export function addNewMovies(movies){
+export function addMovies(movies){
+  const wrapInArray = (...args) => args
+  const dataToSend = ifElse(Array.isArray, identity, wrapInArray)(movies)
   return async dispatch => {
     dispatch(showPreloader())
     try {
-      const { data } = await axios.post(api.addMovies(), { movies })
+      const { data } = await axios.post(api.addMovies(), { movies: dataToSend })
       const dataToSet = Map(fromJS(data))
       dispatch(setCurrentMovie(dataToSet))
       // dispatch(fetchMovies())
