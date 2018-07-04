@@ -12,6 +12,14 @@ class AddMoviesSection extends React.Component {
     file: null
   }
 
+  uploadProps = {
+    beforeUpload: file => {
+      this.setState(() => ({ file }))
+      return false
+    },
+    fileList: null
+  }
+
   disableUploadButton = file => or(isNil, isEmpty)(file)
 
   splitText = text => {
@@ -72,17 +80,12 @@ class AddMoviesSection extends React.Component {
       const text = this.removeEmptyLines(rawText)
       const moviesToSend = this.parseLines(text)
       this.props.addMovies(moviesToSend)
+      this.clearState()
     }
     reader.readAsText(file, 'utf-8')
   }
 
-  uploadProps = {
-    beforeUpload: file => {
-      this.setState(() => ({ file }))
-      return false
-    },
-    fileList: null
-  }
+  clearState = () => this.setState(() => ({ file: null}))
 
   render () {
     return (
