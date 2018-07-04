@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { or, isNil, isEmpty, splitEvery, not } from 'ramda'
+import { or, isNil, isEmpty, splitEvery, not, equals, head, last } from 'ramda'
 
 import { Button, Upload, Icon, Row } from 'antd';
 import * as actions from '../../actions'
@@ -37,12 +37,12 @@ class AddMoviesSection extends React.Component {
   }
 
   getLineKey = line => {
-    const key = line.split(':')[0]
+    const key = head(line.split(':'))
     return key.trim().toLowerCase()
   }
 
   getLineValue = line => {
-    const value = line.split(':')[1]
+    const value = last(line.split(':'))
     return value.trim()
   }
 
@@ -51,11 +51,11 @@ class AddMoviesSection extends React.Component {
     return movieItems.reduce((arr, movie, movieIndex) => {
       if(not(arr[movieIndex])) arr[movieIndex] = {}
       movie.forEach(line => {
-        if (this.getLineKey(line) === 'release year') {
+        if (equals(this.getLineKey(line), 'release year')) {
           arr[movieIndex].year = Number(this.getLineValue(line))
           return
         }
-        if (this.getLineKey(line) === 'stars') {
+        if (equals(this.getLineKey(line), 'stars')) {
           const trimStars = star => star.trim()
           const stars = this.getLineValue(line).split(',').map(trimStars)
           arr[movieIndex].stars = stars

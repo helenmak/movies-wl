@@ -2,10 +2,6 @@ var express = require('express');
 var router = express.Router();
 const movieDb = require('../models').Movie;
 
-// router.get('/search/movie', function(req, res, next) {
-//   res.render('index', { title: 'Movies' });
-// });
-
 router.get('/search', (req, res) => {
   movieDb.findMovies(req.query).then(movies => res.send(movies));
 });

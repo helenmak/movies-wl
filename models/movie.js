@@ -1,3 +1,5 @@
+const { head, last, multiply, subtract } = require('ramda')
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
@@ -29,7 +31,6 @@ const movieSchema = {
 const Movie = new Schema(movieSchema)
 
 Movie.statics.addMovies = function ({movies}) {
-  console.log('movie add method, movies, array: ', movies)
   return Promise.all(
     movies.map(({title, year, format, stars}) => {
       return new this({
@@ -49,15 +50,15 @@ Movie.statics.findMovies = function ({title, stars, page}) {
   if (stars) query.stars = { $elemMatch: { $regex: stars, $options: 'i' } }
 
   const itemsOnPage = 10
-  const itemsOffset = (page - 1) * itemsOnPage
+  const itemsOffset = multiply(subtract(page, 1), itemsOnPage)
 
   return Promise.all([
     this.find(query).sort({ title: 'asc' }).skip(itemsOffset).limit(itemsOnPage),
     this.find(query).count(),
   ]).then(result => ({
-    results: result[0],
-    currentPage: +page,
-    totalResults: result[1]
+    results: head(result),
+    currentPage: Number(page),
+    totalResults: last(result)
   }))
 }
 

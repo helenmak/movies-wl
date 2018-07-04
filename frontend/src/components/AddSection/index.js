@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import { either, identical, flip, gt, lt } from 'ramda'
 
 import { Button, Modal, Form, Input, Select } from 'antd';
 import * as actions from '../../actions'
@@ -27,16 +28,32 @@ class AddSection extends React.Component {
 
   handleSubmit = () => {
     this.props.form.validateFields((err, values) => {
-      console.log('err', err)
       if (!err) {
         if(values.stars){
           const trimStars = star => star.trim()
-          values.stars = values.stars.split(',').map(trimStars) // TODO: сделать ввод более юзер-френдли
+          values.stars = values.stars.split(',').map(trimStars)
+        }
+        if(values.year){
+          const year = Number(values.year)
+          values.year = year
         }
         this.props.addMovies(values)
         this.hideModal()
       }
     })
+  }
+
+  validateYear = (rule, value, callback) => {
+    const currentYear = (new Date()).getFullYear()
+    const greaterThan = flip(gt)
+    const lessThan = flip(lt)
+    console.log(either(greaterThan(currentYear), lessThan(1880))(Number(value)))
+    const notPass = either(either(greaterThan(currentYear), lessThan(1880)), identical(NaN))
+    if (notPass(Number(value))) {
+      callback('Please input correct year!')
+    } else {
+      callback()
+    }
   }
 
   render () {
@@ -58,12 +75,16 @@ class AddSection extends React.Component {
             <FormItem label="Title">
               {getFieldDecorator('title', {
                 rules: [{ required: true, message: 'Please input the title of movie!' }]
-              })(
+                })(
                 <Input />
               )}
             </FormItem>
             <FormItem label="Release Year">
-              {getFieldDecorator('year')(<Input />)}
+              {getFieldDecorator('year',
+              { rules: [{validator: this.validateYear }]}
+                )(
+                  <Input />
+              )}
             </FormItem>
             <FormItem label="Format">
               {getFieldDecorator('format')(
@@ -75,7 +96,7 @@ class AddSection extends React.Component {
               }
             </FormItem>
             <FormItem label="Stars">
-              {getFieldDecorator('stars')(<Input />)}
+              {getFieldDecorator('stars')(<Input placeholder="Separate multiple values with comma" />)}
             </FormItem>
 
           </Form>
