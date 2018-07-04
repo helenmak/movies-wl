@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  p Content will be soon
+  input(type = 'file' id = 'loadDictionary' multiple)
+  div
+    p Here are your files:
+    p.display
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/jsonToServer.js")
