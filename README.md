@@ -9,11 +9,13 @@ npm install
 # then install frontend dependencies
 cd frontend
 npm install
+```
 
 ## Run application:
 
 From root directory (use 2 terminal windows):
 
+``` bash
 # serve frontend with hot reload at localhost:3000
 npm run devstart
 
